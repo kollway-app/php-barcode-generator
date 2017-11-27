@@ -1,0 +1,30 @@
+{
+    "name": "kollway/php-barcode-generator",
+    "description": "forked from http://github.com/picqer/php-barcode-generator",
+    "type": "library",
+    "license": "LGPLv3",
+    "homepage": "http://github.com/picqer/php-barcode-generator",
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "homepage": "http://nicolaasuni.tecnick.com"
+        },
+        {
+            "name": "Casper Bakker",
+            "email": "info@picqer.com"
+        },
+        {
+            "name": "kollway",
+            "email": "app@kollway.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kollway\\Barcode\\": "src"
+        }
+    }
+}
