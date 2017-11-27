@@ -69,6 +69,8 @@ abstract class BarcodeGenerator
     const TYPE_PHARMA_CODE = 'PHARMA';
     const TYPE_PHARMA_CODE_TWO_TRACKS = 'PHARMA2T';
 
+    const FONT_SIZE = 14;
+
     /**
      * Get the barcode data
      *
@@ -2848,5 +2850,23 @@ abstract class BarcodeGenerator
         }
 
         return $newBarcodeArray;
+    }
+
+    protected function drawBarcodeText($img_res, $barcode_text, $width, $height, $color) {
+        $font = dirname(__FILE__, 2)."/"."FreeSansBold.ttf";
+        $font_width = imagefontwidth (self::FONT_SIZE);
+        $font_height = imagefontheight(self::FONT_SIZE);
+        $text_width = $font_width * mb_strlen($barcode_text);
+        $font_x = ceil ( ($width - $text_width) / 2 );   //计算文字的水平位置
+
+        $draw_size = self::FONT_SIZE;
+        $gd_info = gd_info();
+        if($gd_info
+            && isset($gd_info['GD Version'])
+            && strpos($gd_info['GD Version'], '2.') >= 0) {
+            $draw_size = self::FONT_SIZE * 3 / 4;     //GD 2.x库需要将pixel size转换为point size
+        }
+
+        imagettftext($img_res, $draw_size, 0, $font_x, $height - ($font_height / 2), $color, $font, $barcode_text);
     }
 }

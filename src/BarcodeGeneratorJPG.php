@@ -12,6 +12,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
      *
      * @param string $code code to print
      * @param string $type type of barcode:
+     * @param bool $draw_code whether draw the barcode on the bottom
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $totalHeight Height of a single bar element in pixels.
      * @param array $color RGB (0-255) foreground color for bar elements (background is transparent).
@@ -19,7 +20,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
      * @public
      * @throws BarcodeException
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0))
+    public function getBarcode($code, $type, $draw_code = true, $widthFactor = 2, $totalHeight = 60, $color = array(0, 0, 0))
     {
         $barcodeData = $this->getBarcodeData($code, $type);
 
@@ -45,13 +46,18 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             throw new BarcodeException('Neither gd-lib or imagick are installed!');
         }
 
+        $delta_height = $totalHeight;
+        if($draw_code == true) {
+            $delta_height = $totalHeight - (imagefontheight(self::FONT_SIZE) * 1.5);
+        }
+
         // print bars
         $positionHorizontal = 0;
         foreach ($barcodeData['bars'] as $bar) {
             $bw = round(($bar['width'] * $widthFactor), 3);
-            $bh = round(($bar['height'] * $totalHeight / $barcodeData['maxHeight']), 3);
+            $bh = round(($bar['height'] * $delta_height / $barcodeData['maxHeight']), 3);
             if ($bar['drawBar']) {
-                $y = round(($bar['positionVertical'] * $totalHeight / $barcodeData['maxHeight']), 3);
+                $y = round(($bar['positionVertical'] * $delta_height / $barcodeData['maxHeight']), 3);
                 // draw a vertical bar
                 if ($imagick && isset($imageMagickObject)) {
                     $imageMagickObject->rectangle($positionHorizontal, $y, ($positionHorizontal + $bw), ($y + $bh));
@@ -62,6 +68,11 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             }
             $positionHorizontal += $bw;
         }
+
+        if($draw_code == true) {
+            $this->drawBarcodeText($jpg, $code, $width, $height, $colorForeground);
+        }
+
         ob_start();
         if ($imagick && isset($imageMagickObject)) {
             $jpg->drawImage($imageMagickObject);
