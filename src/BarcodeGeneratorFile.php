@@ -4,7 +4,7 @@ namespace Kollway\Barcode;
 
 use Kollway\Barcode\Exceptions\BarcodeException;
 
-class BarcodeGeneratorJPG extends BarcodeGenerator
+class BarcodeGeneratorFile extends BarcodeGenerator
 {
 
     /**
